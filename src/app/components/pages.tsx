@@ -3,7 +3,7 @@ import React from 'react'
 export default function pages() {
   return (
     <div>
-      hi maher 
+      hi maher ali mattummal from malappuram
     </div>
   )
 }
