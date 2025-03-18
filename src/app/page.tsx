@@ -4,6 +4,6 @@ export default function Home() {
   return (
    
   <div>
-    brightmind
+    brightmind 2025
   </div>);
 }
