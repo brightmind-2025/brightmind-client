@@ -1,3 +1,9 @@
+import LandingPage from "@/components/home/LandingPage";
+
 export default function Home() {
-  return <div>brightmind 2026</div>;
+  return (
+    <div>
+      <LandingPage />
+    </div>
+  );
 }
