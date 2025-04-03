@@ -1,10 +1,10 @@
-import Login from "@/components/auth/login";
+import HomePage from "../../../components/navbar/HomePage";
 import React from "react";
 
 function page() {
   return (
     <div>
-      <Login/>
+      < HomePage/>
     </div>
   );
 }
