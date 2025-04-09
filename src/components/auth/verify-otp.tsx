@@ -2,39 +2,43 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axiosInstance, { axiosErrorCatch } from "@/utils/axios";
 import { FaCheckCircle } from "react-icons/fa";
-
+import { useAppDispatch } from "../hooks/dispatchHook";
+import { activateUser } from "@/lib/thunks/authThunks";
+import { axiosErrorCatch } from "@/utils/axios";
 
 const VerifyOtp = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+
   const [otp, setOtp] = useState(["", "", "", ""]);
+  const [activationToken, setActivationToken] = useState("");
   const [error, setError] = useState("");
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
 
   useEffect(() => {
-    const registrationData = localStorage.getItem("registration");
-    if (registrationData) {
-      const parsedData = JSON.parse(registrationData);
-      setEmail(parsedData.email);
-      setName(parsedData.name);
-      setPassword(parsedData.password);
+    const token = localStorage.getItem("activationToken");
+    if (token) {
+      setActivationToken(token);
     } else {
-      
+      setError("No activation token found. Please register again.");
     }
-  }, [router]);
+  }, []);
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const otpValue = otp.join(""); // Combine OTP inputs into one string
+    const otpValue = otp.join("");
+
     try {
-      const res = await axiosInstance.post("api/user/activate-user", { email, otp: otpValue, name, password });
-      if (res.data.success) {
-        alert("OTP Verified! Registration successful.");
-        localStorage.removeItem("registration");
-        router.push("/login");
+      const result = (await dispatch(
+        activateUser({
+          activation_code: otpValue,
+          activation_token: activationToken,
+        })
+      ).unwrap()) as { success: boolean };
+
+      if (result.success) {
+        localStorage.removeItem("activationToken");
+        router.push("/auth/login");
       }
     } catch (err) {
       setError(axiosErrorCatch(err));
@@ -54,12 +58,10 @@ const VerifyOtp = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen  bg-gray-900 text-white">
+    <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
       <div className="w-full max-w-sm p-8 bg-[#142952] rounded-3xl shadow-lg space-y-6 text-center">
-        
-        
         <div className="flex justify-center">
-        <FaCheckCircle className="text-4xl text-green-500 mb-4" />
+          <FaCheckCircle className="text-4xl text-green-500 mb-4" />
         </div>
 
         <h1 className="text-xl font-semibold">Verify Your Account</h1>
@@ -89,10 +91,9 @@ const VerifyOtp = () => {
           </button>
         </form>
 
-        {/* Go Back to Sign In */}
         <p className="text-gray-300 text-sm">
           Go back to sign in?{" "}
-          <a href="/login" className="text-blue-400 hover:underline">
+          <a href="/auth/login" className="text-blue-400 hover:underline">
             Sign in
           </a>
         </p>

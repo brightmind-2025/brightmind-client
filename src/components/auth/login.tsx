@@ -3,31 +3,31 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
-import axiosInstance from "@/utils/axios";
 import { FaGithub } from "react-icons/fa";
 import { AiFillGoogleCircle } from "react-icons/ai";
+import { loginUser } from "@/lib/thunks/authThunks";
+import { useAppDispatch } from "../hooks/dispatchHook";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
     try {
-      const res = await axiosInstance.post("api/auth/login", { email, password });
-
-      if (res.data?.accessToken) {
+      const { payload } = await dispatch(loginUser({ email, password }));
+      localStorage.setItem("token", payload.accessToken);
+      localStorage.setItem("user", JSON.stringify(payload.user));
+      if (true) {
         router.push("/home");
       } else {
         setError("Invalid credentials. Please try again.");
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     }
   };
@@ -35,7 +35,9 @@ const Login = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-900">
       <div className="bg-[#11244D] p-8 rounded-2xl shadow-lg w-96 text-white">
-        <h2 className="text-center text-xl font-bold mb-6">Login with BrightMind</h2>
+        <h2 className="text-center text-xl font-bold mb-6">
+          Login with BrightMind
+        </h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
         <form onSubmit={handleLogin}>
@@ -59,7 +61,10 @@ const Login = () => {
             required
           />
 
-          <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 p-2 rounded text-white font-bold">
+          <button
+            type="submit"
+            className="w-full bg-blue-500 hover:bg-blue-600 p-2 rounded text-white font-bold"
+          >
             Login
           </button>
         </form>
@@ -69,17 +74,25 @@ const Login = () => {
         </div>
 
         <div className="flex justify-center space-x-4">
-          <button onClick={() => signIn("google")} className="bg-gray-700 p-2 rounded hover:cursor-pointer">
+          <button
+            onClick={() => signIn("google")}
+            className="bg-gray-700 p-2 rounded hover:cursor-pointer"
+          >
             <AiFillGoogleCircle className="text-white" size={26} />
           </button>
-          <button onClick={() => signIn("github")} className="bg-gray-700 p-2 rounded hover:cursor-pointer">
-           <FaGithub className="text-white" size={26} />
-           
+          <button
+            onClick={() => signIn("github")}
+            className="bg-gray-700 p-2 rounded hover:cursor-pointer"
+          >
+            <FaGithub className="text-white" size={26} />
           </button>
         </div>
 
         <p className="text-center text-gray-400 mt-4">
-          don&apos;t have an account? <a href="/auth/signup" className="text-blue-400">Sign up</a>
+          don&apos;t have an account?{" "}
+          <a href="/auth/signup" className="text-blue-400">
+            Sign up
+          </a>
         </p>
       </div>
     </div>
