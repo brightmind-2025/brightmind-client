@@ -3,8 +3,11 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Poppins } from "next/font/google";
 import { Josefin_Sans } from "next/font/google";
 
+
 import "./globals.css";
 import Header from "@/components/header";
+
+import ReduxProvider from "@/utils/ReduxProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -36,15 +39,12 @@ export default function RootLayout({
             .trim()
             .replace(/\s+/g, " ")}
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Header />
-            {children}
-          </ThemeProvider>
+          <ReduxProvider>
+            <ThemeProvider>
+              <Header />
+              {children}
+            </ThemeProvider>
+          </ReduxProvider>
         </body>
       </html>
     </>
