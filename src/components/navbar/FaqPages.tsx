@@ -1,8 +1,10 @@
+
 "use client";
 
 import { useState } from "react";
 
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+
 
 const faqs = [
   {
@@ -35,8 +37,10 @@ export default function FAQ() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+
   return (
     <div className="max-w-2xl mx-auto p-4 h-screen text-black dark:text-white pt-26">
+
       <h2 className="text-2xl font-bold text-center mb-4">
         Frequently Asked Questions
       </h2>

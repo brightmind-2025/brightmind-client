@@ -41,7 +41,7 @@ export const axiosErrorCatch = (error: unknown): string => {
         return "No response received from the server. Please try again later.";
       } else {
         return `Error in request setup: ${error.message}`;
-        
+
       }
     } else if (error instanceof Error) {
       return `${error.message}`;

@@ -40,6 +40,7 @@ const Ratings:FC<Props> = ({ rating }) => {
       }
     }
     return <div className="flex mt-10 800px:ml-0"> {stars}</div>;
+
   };
 
   export default Ratings;
