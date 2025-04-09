@@ -7,8 +7,6 @@ import "./globals.css";
 import Header from "@/components/header";
 import ReduxProvider from "@/utils/ReduxProvider";
 
-import ReduxProvider from "@/utils/ReduxProvider";
-
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
