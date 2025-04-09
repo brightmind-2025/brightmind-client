@@ -6,6 +6,7 @@ export default function HomePage() {
   return (
     <div>
        <div className="h-screen flex flex-col md:flex-row items-center  justify-center max-w-6xl mx-auto p-6 pt-10">
+
       <div className="md:w-1/2 flex justify-center">
         <div className="w-80 h-80 md:w-96 md:h-96 bg-gray-200 rounded-full overflow-hidden border-4 border-blue-300">
           <Image
@@ -46,11 +47,10 @@ export default function HomePage() {
           </a>
         </p>
       </div>
-     
     </div>
     <CourseCard />
-    
     </div>
    
+
   );
 }
