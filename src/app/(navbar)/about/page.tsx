@@ -1,13 +1,12 @@
-import AboutPage from '@/components/navbar/AboutPage'
-import React from 'react'
+import AboutPage from "@/components/navbar/AboutPage";
+import React from "react";
 
 function page() {
   return (
     <div>
-
-        <AboutPage/>
+      <AboutPage />
     </div>
-  )
+  );
 }
 
-export default page
+export default page;
