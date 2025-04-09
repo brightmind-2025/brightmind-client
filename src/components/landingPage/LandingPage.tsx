@@ -6,6 +6,7 @@ export default function LandingPage() {
   return (
     <div className="px-44">
       <div className=" h-screen max-w-7xl  w-full flex flex-col lg:flex-row items-center justify-between">
+
         <div className="lg:w-1/2 text-center lg:text-left">
           <h2 className="text-4xl md:text-5xl font-extrabold text-blue-700 mb-4">
             Welcome to <span className="text-yellow-500">BrightMind</span>
@@ -15,6 +16,7 @@ export default function LandingPage() {
             unique way
           </p>
           <p className="text-lg md:text-xl text-gray-600 mb-8">
+
             Explore a transformative approach to skill development on our online
             learning platform. Unlock new realms of possibilities with our
             expertly crafted courses.

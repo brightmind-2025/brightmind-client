@@ -25,7 +25,6 @@ function CourseCard() {
         adipisicing elit Lorem ipsum dolor sit.
       </p>
 
-      
       <div className="flex items-center space-x-2">
         <Ratings rating={4} />
         <span className="text-xs text-gray-400">(4.0)</span>

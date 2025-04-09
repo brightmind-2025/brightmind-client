@@ -2,8 +2,11 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Poppins, Josefin_Sans } from "next/font/google";
+
 import "./globals.css";
 import Header from "@/components/header";
+import ReduxProvider from "@/utils/ReduxProvider";
+
 import ReduxProvider from "@/utils/ReduxProvider";
 
 const poppins = Poppins({

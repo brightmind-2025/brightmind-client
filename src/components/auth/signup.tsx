@@ -11,6 +11,7 @@ import { FaGithub } from "react-icons/fa";
 import { registerUser } from "@/lib/thunks/authThunks";
 import { useAppDispatch } from "../hooks/dispatchHook";
 
+
 export default function Signup() {
   const [formData, setFormData] = useState({
     name: "",
@@ -20,6 +21,7 @@ export default function Signup() {
   const [error, setError] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
+
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
