@@ -1,12 +1,9 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Poppins } from "next/font/google";
-import { Josefin_Sans } from "next/font/google";
-
-
+import { Poppins, Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
-
 import ReduxProvider from "@/utils/ReduxProvider";
 
 const poppins = Poppins({
@@ -28,25 +25,23 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <>
-      <html lang="en" suppressHydrationWarning>
-        <body
-          className={`${poppins.variable} ${josefinSans.variable} dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`
-            .trim()
-            .replace(/\s+/g, " ")}
-        >
-          <ReduxProvider>
-            <ThemeProvider>
-              <Header />
-              {children}
-            </ThemeProvider>
-          </ReduxProvider>
-        </body>
-      </html>
-    </>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${poppins.variable} ${josefinSans.variable}`
+          .trim()
+          .replace(/\s+/g, " ")}
+      >
+        <ReduxProvider>
+          <ThemeProvider>
+            <Header />
+            <div className="pt-20">{children}</div>
+          </ThemeProvider>
+        </ReduxProvider>
+      </body>
+    </html>
   );
 }
