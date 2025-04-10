@@ -9,7 +9,7 @@ import { signIn } from "next-auth/react";
 import { AiFillGoogleCircle } from "react-icons/ai";
 import { FaGithub } from "react-icons/fa";
 import { registerUser } from "@/lib/thunks/authThunks";
-import { useAppDispatch } from "../hooks/dispatchHook";
+import { useAppDispatch } from "@/hooks/dispatchHook";
 
 
 export default function Signup() {
