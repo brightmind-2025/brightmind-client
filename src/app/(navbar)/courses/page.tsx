@@ -1,8 +1,15 @@
+
+
+import CoursesPage from '@/components/course/coursePage'
 import React from 'react'
 
 function page() {
   return (
-    <div>page</div>
+    
+    <div>
+   
+  
+        <CoursesPage/></div>
   )
 }
 

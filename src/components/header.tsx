@@ -9,6 +9,7 @@ import { FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { UserDetails } from "@/types/types";
 
+
 const Header: FC = () => {
   const user = useSelector(
     (state: { auth: { user: UserDetails } }) => state.auth.user
@@ -22,7 +23,7 @@ const Header: FC = () => {
   return (
     <div className="w-full relative z-50 pointer-events-none">
       <div
-        className={`pointer-events-auto dark:bg-[#1d3061] bg-[#0D1C42] fixed top-0 left-0 w-full h-[80px] z-[80px] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500 flex items-center`}
+        className={`pointer-events-auto dark:bg-[#001F3F]  bg-[#274d8e] fixed top-0 left-0 w-full h-[80px] z-[80px] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500 flex items-center`}
       >
         <div className="w-[95%] 800px:w-[92%] m-auto py-2 flex items-center justify-between">
           <div className="flex items-center justify-center gap-1">
@@ -45,19 +46,23 @@ const Header: FC = () => {
             <ModeToggle />
 
             {user ? (
-              <>
-                <Image
-                  src={
-                    typeof user.avatar === "string"
-                      ? user.avatar
-                      : user.avatar?.url ||
-                        "https://i.pinimg.com/736x/f0/93/61/f093616966f89ad84bbb2f5c80989d22.jpg"
-                  }
-                  height={26}
-                  width={26}
-                  alt="User Profile"
-                />
-              </>
+          
+                  <button>
+                    <Image
+                      className=" rounded-full "
+                      src={
+                        typeof user.avatar === "string"
+                          ? user.avatar
+                          : user.avatar?.url ||
+                            "https://i.pinimg.com/736x/68/3d/8f/683d8f58c98a715130b1251a9d59d1b9.jpg"
+                      }
+                      height={40}
+                      width={40}
+                      alt="User Profile"
+                    
+                    />
+                  </button>
+               
             ) : (
               <Link href={"/auth/login"} className="text-white ">
                 <FaUser size={26} />

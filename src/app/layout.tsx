@@ -1,4 +1,3 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Poppins, Josefin_Sans } from "next/font/google";

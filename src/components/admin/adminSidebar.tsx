@@ -35,7 +35,7 @@ const AdminSidebar: React.FC = () => {
   };
 
   return (
-    <div className="h-screen w-64 bg-[#0d1b4c] text-white flex flex-col justify-between py-8 px-6 shadow-lg">
+    <div className="h-screen w-64 bg-gray-700 dark:bg-[#0d1b4c] text-white flex flex-col justify-between py-8 px-6 shadow-lg">
       <div>
         <h1 className="text-2xl font-bold text-center text-yellow-400 mb-8"></h1>
 
