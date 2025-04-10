@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FaCheckCircle } from "react-icons/fa";
-import { useAppDispatch } from "../hooks/dispatchHook";
+import { useAppDispatch } from "@/hooks/dispatchHook";
 import { activateUser } from "@/lib/thunks/authThunks";
 import { axiosErrorCatch } from "@/utils/axios";
 

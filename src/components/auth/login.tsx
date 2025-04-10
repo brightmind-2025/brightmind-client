@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { FaGithub } from "react-icons/fa";
 import { AiFillGoogleCircle } from "react-icons/ai";
 import { loginUser } from "@/lib/thunks/authThunks";
-import { useAppDispatch } from "../hooks/dispatchHook";
+import { useAppDispatch } from "@/hooks/dispatchHook";
 
 const Login = () => {
   const [email, setEmail] = useState("");
