@@ -8,6 +8,7 @@ import { AiFillGoogleCircle } from "react-icons/ai";
 import { FaGithub } from "react-icons/fa";
 import { registerUser } from "@/lib/thunks/authThunks";
 import { useAppDispatch } from "@/hooks/dispatchHook";
+
 export default function Signup() {
   const [formData, setFormData] = useState({
     name: "",
