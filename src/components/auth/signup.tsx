@@ -1,16 +1,13 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-
 import { AiFillGoogleCircle } from "react-icons/ai";
 import { FaGithub } from "react-icons/fa";
 import { registerUser } from "@/lib/thunks/authThunks";
 import { useAppDispatch } from "@/hooks/dispatchHook";
-
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -88,7 +85,7 @@ export default function Signup() {
           <button
             type="submit"
             className="w-full bg-blue-500 hover:bg-blue-600 p-2 rounded text-white font-bold"
-          >https://github.com/brightmind-2025/brightmind-client/pull/12/conflict?name=src%252Fcomponents%252Fauth%252Fsignup.tsx&base_oid=c67a0a554729ce08bf1a294c38d374b7bbe2d4dc&head_oid=ce3a2aeca553fc68f492c3dd65c5716adcbb6319
+          >
             Signup
           </button>
         </form>

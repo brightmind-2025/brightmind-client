@@ -8,9 +8,12 @@ import { ModeToggle } from "@/utils/ThemeSwitcher";
 import { FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { UserDetails } from "@/types/types";
+import UserModal from "./auth/logout";
 
 
 const Header: FC = () => {
+  const [showUserModal, setShowUserModal] = useState(false);
+
   const user = useSelector(
     (state: { auth: { user: UserDetails } }) => state.auth.user
   );
@@ -46,28 +49,33 @@ const Header: FC = () => {
             <ModeToggle />
 
             {user ? (
-          
-                  <button>
-                    <Image
-                      className=" rounded-full "
-                      src={
-                        typeof user.avatar === "string"
-                          ? user.avatar
-                          : user.avatar?.url ||
-                            "https://i.pinimg.com/736x/68/3d/8f/683d8f58c98a715130b1251a9d59d1b9.jpg"
-                      }
-                      height={40}
-                      width={40}
-                      alt="User Profile"
-                    
-                    />
-                  </button>
-               
-            ) : (
-              <Link href={"/auth/login"} className="text-white ">
-                <FaUser size={26} />
-              </Link>
-            )}
+  <>
+    <button onClick={() => setShowUserModal(true)}>
+      <Image
+        className="rounded-full cursor-pointer"
+        src={
+          typeof user.avatar === "string"
+            ? user.avatar
+            : user.avatar?.url ||
+              "https://i.pinimg.com/736x/68/3d/8f/683d8f58c98a715130b1251a9d59d1b9.jpg"
+        }
+        height={40}
+        width={40}
+        alt="User Profile"
+      />
+    </button>
+    <UserModal
+      user={user}
+      isOpen={showUserModal}
+      onClose={() => setShowUserModal(false)}
+    />
+  </>
+) : (
+  <Link href={"/auth/login"} className="text-white">
+    <FaUser size={26} />
+  </Link>
+)}
+
           </div>
         </div>
       </div>
