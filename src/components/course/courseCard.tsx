@@ -11,42 +11,50 @@ interface Props {
 const CourseCard: React.FC<Props> = ({ course }) => {
   return (
     <Link href={`/courses/${course._id}`}>
-      <div className="w-full max-w-[288px] bg-white border-gray-400 border dark:bg-[#274d8e] rounded-3xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
-        <div className="relative w-full h-56 overflow-hidden rounded-t-3xl">
+      <div className="w-full max-w-[288px] bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+        {/* Thumbnail */}
+        <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
           <Image
             src={
               course.thumbnail?.url ||
               "https://i.pinimg.com/736x/c5/a0/03/c5a00375d647591a14dd36e31151acb1.jpg"
             }
             alt={course.name}
-            layout="fill"
-            objectFit="cover"
-            className="rounded-t-3xl transition-transform duration-500 hover:scale-110"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            style={{ objectFit: "cover" }}
+            className="rounded-t-lg transition-transform duration-500 hover:scale-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent dark:hidden"></div>
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
         </div>
 
-        <div className="p-5 space-y-3">
-          <h2 className="text-lg font-bold text-gray-800 dark:text-white line-clamp-1">
+        {/* Content */}
+        <div className="p-4 space-y-3">
+          {/* Course Name */}
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white line-clamp-1">
             {course.name}
           </h2>
 
-          <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+          {/* Course Description */}
+          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
             {course.description}
           </p>
 
-          <div className="flex items-center justify-between">
+          {/* Ratings */}
+          <div className="flex items-center gap-2">
             <Stars rating={course.ratings ?? 0} />
-            <span className="text-sm text-gray-500">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
               ({(course.ratings ?? 0).toFixed(1)})
             </span>
           </div>
 
+          {/* Price and Lectures */}
           <div className="flex items-center justify-between">
-            <span className="text-blue-600 dark:text-green-400 font-semibold text-lg">
+            <span className="text-xl font-bold text-blue-600 dark:text-green-400">
               ₹{course.price}
             </span>
-            <span className="text-xs text-gray-500 dark:text-gray-300 flex items-center gap-1">
+            <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4"
