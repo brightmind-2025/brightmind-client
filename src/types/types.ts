@@ -1,4 +1,5 @@
 export interface UserDetails {
+    createdAt(createdAt: any): import("react").ReactNode;
     _id: string;
     name: string;
     email: string;
@@ -40,9 +41,29 @@ export interface UserDetails {
     demoUrl: string;
     benefits: { title: string }[];
     prerequisites: { title: string }[];
-    reviews: [];
+    reviews?: Review[]; 
     courseData: CourseData[];
     ratings?: number;
     purchased?: number;
+    questions?: Question[];
+    
   }
   
+  export interface Answer {
+    id: string;
+    text: string;
+    isCorrect: boolean;
+  }
+
+  export interface Review {
+    id: string;
+    userId: string;
+    comment: string;
+    rating: number;
+  }
+
+  export interface Question {
+    id: string;
+    content: string;
+    answers?: Answer[]; 
+  }
