@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import Cookies from "js-cookie";
 import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation"; // Import usePathname for active route detection
 
 export type User = {
   id: string;
@@ -21,6 +22,9 @@ const AdminSidebar: React.FC = () => {
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   useEffect(() => {
     const currentUser = Cookies.get("user");
     if (currentUser) {
@@ -32,6 +36,15 @@ const AdminSidebar: React.FC = () => {
   const handleLogout = () => {
     Cookies.remove("user");
     setShowLogoutPopup(false);
+    router.push("/login"); 
+  };
+
+  const navigateTo = (route: string) => () => {
+    router.push(route);
+  };
+
+  const isActiveRoute = (route: string) => {
+    return pathname === route;
   };
 
   return (
@@ -62,10 +75,26 @@ const AdminSidebar: React.FC = () => {
           <div>
             <h2 className="font-semibold text-sm text-gray-300 mb-2">Data</h2>
             <ul className="space-y-2">
-              <li className="cursor-pointer hover:text-cyan-300 text-sm">
+           
+              <li
+                className={`cursor-pointer text-sm ${
+                  isActiveRoute("/admin/users")
+                    ? "text-cyan-400 hover:text-cyan-300"
+                    : "hover:text-cyan-300"
+                }`}
+                onClick={navigateTo("/admin/users")}
+              >
                 Users
               </li>
-              <li className="cursor-pointer hover:text-cyan-300 text-sm">
+              
+              <li
+                className={`cursor-pointer text-sm ${
+                  isActiveRoute("/admin/invoices")
+                    ? "text-cyan-400 hover:text-cyan-300"
+                    : "hover:text-cyan-300"
+                }`}
+                onClick={navigateTo("/admin/invoices")}
+              >
                 Invoices
               </li>
             </ul>
@@ -76,10 +105,26 @@ const AdminSidebar: React.FC = () => {
               Content
             </h2>
             <ul className="space-y-2">
-              <li className="flex items-center gap-2 cursor-pointer hover:text-cyan-300 text-sm">
+              
+              <li
+                className={`flex items-center gap-2 cursor-pointer text-sm ${
+                  isActiveRoute("/admin/create-course")
+                    ? "text-cyan-400 hover:text-cyan-300"
+                    : "hover:text-cyan-300"
+                }`}
+                onClick={navigateTo("/admin/create-course")}
+              >
                 <FaFileAlt size={16} /> Create course
               </li>
-              <li className="flex items-center gap-2 cursor-pointer hover:text-cyan-300 text-sm">
+       
+              <li
+                className={`flex items-center gap-2 cursor-pointer text-sm ${
+                  isActiveRoute("admin/current-courses")
+                    ? "text-cyan-400 hover:text-cyan-300"
+                    : "hover:text-cyan-300"
+                }`}
+                onClick={navigateTo("/admin/current-courses")}
+              >
                 <FaVideo size={16} /> Current courses
               </li>
             </ul>
@@ -90,13 +135,36 @@ const AdminSidebar: React.FC = () => {
               Customization
             </h2>
             <ul className="space-y-2">
-              <li className="cursor-pointer hover:text-cyan-300 text-sm">
+              <li
+                className={`cursor-pointer text-sm ${
+                  isActiveRoute("/admin/hero")
+                    ? "text-cyan-400 hover:text-cyan-300"
+                    : "hover:text-cyan-300"
+                }`}
+                onClick={navigateTo("/hero")}
+              >
                 Hero
               </li>
-              <li className="flex items-center gap-2 cursor-pointer hover:text-cyan-300 text-sm">
+            
+              <li
+                className={`flex items-center gap-2 cursor-pointer text-sm ${
+                  isActiveRoute("/admin/faq")
+                    ? "text-cyan-400 hover:text-cyan-300"
+                    : "hover:text-cyan-300"
+                }`}
+                onClick={navigateTo("/admin/faq")}
+              >
                 <FaQuestionCircle size={16} /> FAQ
               </li>
-              <li className="flex items-center gap-2 cursor-pointer hover:text-cyan-300 text-sm">
+          
+              <li
+                className={`flex items-center gap-2 cursor-pointer text-sm ${
+                  isActiveRoute("/admin/categories")
+                    ? "text-cyan-400 hover:text-cyan-300"
+                    : "hover:text-cyan-300"
+                }`}
+                onClick={navigateTo("/admin/categories")}
+              >
                 <FaThLarge size={16} /> Categories
               </li>
             </ul>
@@ -107,7 +175,15 @@ const AdminSidebar: React.FC = () => {
               Controllers
             </h2>
             <ul className="space-y-2">
-              <li className="cursor-pointer hover:text-cyan-300 text-sm">
+           
+              <li
+                className={`cursor-pointer text-sm ${
+                  isActiveRoute("/admin/manage-team")
+                    ? "text-cyan-400 hover:text-cyan-300"
+                    : "hover:text-cyan-300"
+                }`}
+                onClick={navigateTo("/admin/manage-team")}
+              >
                 Manage Team
               </li>
             </ul>
