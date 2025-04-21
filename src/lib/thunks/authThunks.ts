@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-
 const API_URL = "http://localhost:4004/api/user";
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
@@ -66,8 +65,16 @@ export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
   async (_, { rejectWithValue }) => {
     try {
-      await axios.get(`${API_URL}/logout-user`);
-      return true;
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+      const response = await axios.get(`${API_URL}/logout-user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
         return rejectWithValue(err.response.data);
