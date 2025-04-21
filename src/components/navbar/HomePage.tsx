@@ -1,7 +1,22 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
+import { useAppDispatch, useAppSelector } from "@/hooks/dispatchHook";
+import { fetchAllCourses } from "@/lib/thunks/courseThunks";
+import CourseCard from "@/components/course/courseCard";
 import homeIcon from "../../assets/homeIcon.jpeg";
+import Link from "next/link";
+
 export default function HomePage() {
+  const dispatch = useAppDispatch();
+  const { courses, loading, error } = useAppSelector((state) => state.courses);
+
+  useEffect(() => {
+    dispatch(fetchAllCourses());
+  }, [dispatch]);
+
   return (
     <div>
       <div className="h-screen flex flex-col md:flex-row items-center justify-center max-w-6xl mx-auto">
@@ -22,13 +37,13 @@ export default function HomePage() {
             Improve Your Online <br /> Learning Experience <br /> Better
             Instantly
           </h1>
-          <p className="text-gray-500  mt-4">
+          <p className="text-gray-500 mt-4">
             We have 20k+ Online courses & 500k+ Online registered students.
             <br />
             Find your desired Courses from them.
           </p>
 
-          <div className="mt-6 flex items-center justify-center md:justify-start bg-gray-100  rounded-full px-4 py-2 max-w-md shadow-md">
+          <div className="mt-6 flex items-center justify-center md:justify-start bg-gray-100 rounded-full px-4 py-2 max-w-md shadow-md">
             <input
               type="text"
               placeholder="Search Courses..."
@@ -41,10 +56,27 @@ export default function HomePage() {
 
           <p className="text-[#cac1c1] mt-4 flex items-center justify-center md:justify-start">
             <span className="mr-2">👨‍🎓👩‍🎓</span> 300k+ People already trusted us.{" "}
-            <a href="#" className="text-green-600 font-semibold">
+            <Link href="/courses" className="text-green-600 font-semibold">
               View Courses
-            </a>
+            </Link>
           </p>
+        </div>
+      </div>
+
+      <div className="mt-16 px-4 max-w-6xl mx-auto">
+        <h2 className="text-2xl font-bold mb-6 text-center text-white">
+          Expand Your Career Opportunity With Our Courses
+        </h2>
+        <div className="flex flex-wrap justify-between gap-6">
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            courses
+              .slice(0, 3)
+              .map((course) => <CourseCard key={course._id} course={course} />)
+          )}
         </div>
       </div>
     </div>

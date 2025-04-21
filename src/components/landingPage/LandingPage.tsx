@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import hero from "../../assets/landing-page-hero.svg";
-import CourseCard from "@/shared/CourseCard";
+
 
 export default function LandingPage() {
   const router = useRouter();
@@ -45,11 +45,7 @@ export default function LandingPage() {
           />
         </div>
       </div>
-      <div className="flex gap-10">
-        <CourseCard />
-        <CourseCard />
-        <CourseCard />
-      </div>
+    
     </div>
   );
 }

@@ -12,7 +12,6 @@ const CourseCard: React.FC<Props> = ({ course }) => {
   return (
     <Link href={`/courses/${course._id}`}>
       <div className="w-full max-w-[288px] bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
-        {/* Thumbnail */}
         <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
           <Image
             src={
@@ -25,31 +24,25 @@ const CourseCard: React.FC<Props> = ({ course }) => {
             style={{ objectFit: "cover" }}
             className="rounded-t-lg transition-transform duration-500 hover:scale-110"
           />
-          {/* Gradient Overlay */}
+
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
         </div>
 
-        {/* Content */}
         <div className="p-4 space-y-3">
-          {/* Course Name */}
           <h2 className="text-lg font-semibold text-gray-800 dark:text-white line-clamp-1">
             {course.name}
           </h2>
 
-          {/* Course Description */}
           <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
             {course.description}
           </p>
 
-          {/* Ratings */}
           <div className="flex items-center gap-2">
             <Stars rating={course.ratings ?? 0} />
             <span className="text-xs text-gray-500 dark:text-gray-400">
               ({(course.ratings ?? 0).toFixed(1)})
             </span>
           </div>
-
-          {/* Price and Lectures */}
           <div className="flex items-center justify-between">
             <span className="text-xl font-bold text-blue-600 dark:text-green-400">
               ₹{course.price}
