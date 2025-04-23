@@ -1,4 +1,3 @@
-"use client";
 import { useGetUsersAllCoursesQuery } from "@/lib/features/courses/courseApi";
 import CourseCard from "@/shared/CourseCard";
 import React, { useEffect, useState } from "react";

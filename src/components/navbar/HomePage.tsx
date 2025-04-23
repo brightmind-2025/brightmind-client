@@ -1,4 +1,3 @@
-"use client"
 import Image from "next/image";
 import { FaSearch } from "react-icons/fa";
 import homeIcon from "../../assets/homeIcon.png";
