@@ -1,5 +1,4 @@
 "use client";
-
 import { ThemeProvider } from "@/components/theme-provider";
 import { Poppins, Josefin_Sans } from "next/font/google";
 import "./globals.css";
@@ -16,7 +15,7 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-Poppins",
-});
+});                    
 
 const josefinSans = Josefin_Sans({
   subsets: ["latin"],
