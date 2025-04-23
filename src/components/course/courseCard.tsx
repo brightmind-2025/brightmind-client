@@ -1,135 +1,81 @@
-// "use client";
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Course } from "@/types/types";
+import Stars from "../ui/stars";
 
-// import { FontAwesome } from "@react-icons/all-files/fa/FontAwesome";
-// import { Ionicons } from "@react-icons/all-files/io5/IoListOutline";
-// import { useRouter } from "next/navigation";
-// import styled from "styled-components";
+interface Props {
+  course: Course;
+}
 
-// export default function CourseCard({ item }: { item: CoursesType }) {
-//   const router = useRouter();
+const CourseCard: React.FC<Props> = ({ course }) => {
+  return (
+    <Link href={`/courses/${course._id}`}>
+      <div className="w-full max-w-[288px] bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer">
+        {/* Thumbnail */}
+        <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
+          <Image
+            src={
+              course.thumbnail?.url ||
+              "https://i.pinimg.com/736x/c5/a0/03/c5a00375d647591a14dd36e31151acb1.jpg"
+            }
+            alt={course.name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            style={{ objectFit: "cover" }}
+            className="rounded-t-lg transition-transform duration-500 hover:scale-110"
+          />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+        </div>
 
-//   return (
-//     <Card onClick={() => router.push(`/course-details?item=${encodeURIComponent(JSON.stringify(item))}`)}>
-//       <ImageContainer>
-//         <Thumbnail src={item.thumbnail.url} alt={item.name} />
-//       </ImageContainer>
-//       <Content>
-//         <Title>{item.name}</Title>
-//         <Row>
-//           <RatingContainer>
-//             <FontAwesome icon="star" size={14} color={"#ffb800"} />
-//             <RatingText>{item?.ratings}</RatingText>
-//           </RatingContainer>
-//           <StudentCount>{item.purchased} Students</StudentCount>
-//         </Row>
-//         <Row>
-//           <PriceContainer>
-//             <Price>${item?.price}</Price>
-//             <EstimatedPrice>${item?.estimatedPrice}</EstimatedPrice>
-//           </PriceContainer>
-//           <LectureContainer>
-//             <Ionicons size={20} color={"#8A8A8A"} />
-//             <LectureText>{item.courseData.length} Lectures</LectureText>
-//           </LectureContainer>
-//         </Row>
-//       </Content>
-//     </Card>
-//   );
-// }
+        {/* Content */}
+        <div className="p-4 space-y-3">
+          {/* Course Name */}
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white line-clamp-1">
+            {course.name}
+          </h2>
 
-// // Styled Components
-// const Card = styled.div`
-//   background-color: #fff;
-//   border-radius: 12px;
-//   width: 95%;
-//   max-width: 400px;
-//   overflow: hidden;
-//   margin: 15px auto;
-//   padding: 8px;
-//   cursor: pointer;
-//   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-//   transition: transform 0.2s;
+          {/* Course Description */}
+          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+            {course.description}
+          </p>
 
-//   &:hover {
-//     transform: scale(1.02);
-//   }
-// `;
+          {/* Ratings */}
+          <div className="flex items-center gap-2">
+            <Stars rating={course.ratings ?? 0} />
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              ({(course.ratings ?? 0).toFixed(1)})
+            </span>
+          </div>
 
-// const ImageContainer = styled.div`
-//   display: flex;
-//   justify-content: center;
-// `;
+          {/* Price and Lectures */}
+          <div className="flex items-center justify-between">
+            <span className="text-xl font-bold text-blue-600 dark:text-green-400">
+              ₹{course.price}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              {course.courseData.length} Lectures
+            </span>
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+};
 
-// const Thumbnail = styled.img`
-//   width: 100%;
-//   height: 220px;
-//   object-fit: cover;
-//   border-radius: 5px;
-// `;
-
-// const Content = styled.div`
-//   padding: 10px;
-// `;
-
-// const Title = styled.h3`
-//   font-size: 14px;
-//   text-align: left;
-//   margin-top: 10px;
-//   font-family: "Raleway", sans-serif;
-//   font-weight: 600;
-// `;
-
-// const Row = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: space-between;
-//   margin-top: 10px;
-// `;
-
-// const RatingContainer = styled.div`
-//   display: flex;
-//   align-items: center;
-//   background-color: #141517;
-//   padding: 4px 10px;
-//   border-radius: 5px;
-// `;
-
-// const RatingText = styled.span`
-//   color: white;
-//   font-size: 14px;
-//   margin-left: 5px;
-// `;
-
-// const StudentCount = styled.span`
-//   font-size: 14px;
-//   color: #333;
-// `;
-
-// const PriceContainer = styled.div`
-//   display: flex;
-//   align-items: center;
-// `;
-
-// const Price = styled.span`
-//   font-size: 18px;
-//   font-weight: 600;
-// `;
-
-// const EstimatedPrice = styled.span`
-//   font-size: 16px;
-//   font-weight: 400;
-//   text-decoration: line-through;
-//   margin-left: 5px;
-//   color: gray;
-// `;
-
-// const LectureContainer = styled.div`
-//   display: flex;
-//   align-items: center;
-// `;
-
-// const LectureText = styled.span`
-//   margin-left: 5px;
-//   font-size: 14px;
-// `;
-
+export default CourseCard;

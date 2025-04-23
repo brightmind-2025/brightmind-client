@@ -1,4 +1,5 @@
 export interface UserDetails {
+    createdAt(createdAt: any): import("react").ReactNode;
     _id: string;
     name: string;
     email: string;
@@ -13,3 +14,56 @@ export interface UserDetails {
     refreshToken?: string; 
   }
   
+  export interface CourseData {
+    title: string;
+    description: string;
+    videoUrl: string;
+    videoThumbnail: string;
+    videoSection: string;
+    videoLength: number;
+    videoPlayer: string;
+    links: { title: string; url: string }[];
+    suggestion: string;
+    questions: []; 
+  }
+  
+  export interface Course {
+    _id: string;
+    name: string;
+    description: string;
+    price: number;
+    thumbnail: {
+      public_id: string;
+      url: string;
+    };
+    tags: string;
+    level: string;
+    demoUrl: string;
+    benefits: { title: string }[];
+    prerequisites: { title: string }[];
+    reviews?: Review[]; 
+    courseData: CourseData[];
+    ratings?: number;
+    purchased?: number;
+    questions?: Question[];
+    
+  }
+  
+  export interface Answer {
+    id: string;
+    text: string;
+    isCorrect: boolean;
+  }
+
+  export interface Review {
+    id: string;
+    userId: string;
+    comment: string;
+    rating: number;
+  }
+
+  export interface Question {
+    id: string;
+    content: string;
+    answers?: Answer[]; 
+  }
