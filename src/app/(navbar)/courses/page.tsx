@@ -1,15 +1,11 @@
-
-
-import CoursesPage from '@/components/course/coursePage'
+"use client"
 import React from 'react'
-
+import Courses from "../../../components/navbar/Courses";
 function page() {
   return (
-    
     <div>
-   
-  
-        <CoursesPage/></div>
+      <Courses />
+    </div>
   )
 }
 

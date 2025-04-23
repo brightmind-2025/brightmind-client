@@ -1,4 +1,5 @@
-;import Signup from "@/components/auth/signup";
+"use client"
+import Signup from "../../../components/auth/signup";
 import React from "react";
 
 function page() {

@@ -1,62 +1,74 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useActivationMutation } from "@/lib/features/authApi";
+import React, { FC, useEffect, useRef, useState } from "react";
+import { toast } from "react-hot-toast";
 import { FaCheckCircle } from "react-icons/fa";
-import { useAppDispatch } from "@/hooks/dispatchHook";
-import { activateUser } from "@/lib/thunks/authThunks";
-import { axiosErrorCatch } from "@/utils/axios";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
-const VerifyOtp = () => {
+type Props = {};
+type VerifyNumber = {
+  "0": string;
+  "1": string;
+  "2": string;
+  "3": string;
+};
+const Verification: FC<Props> = (props: Props) => {
+  const { token } = useSelector((state: any) => state.auth);
+  const [invalidError, setInvalidError] = useState<boolean>(false);
   const router = useRouter();
-  const dispatch = useAppDispatch();
-
-  const [otp, setOtp] = useState(["", "", "", ""]);
-  const [activationToken, setActivationToken] = useState("");
-  const [error, setError] = useState("");
-
+  const [activation, { data, error, isSuccess }] = useActivationMutation();
   useEffect(() => {
-    const token = localStorage.getItem("activationToken");
-    if (token) {
-      setActivationToken(token);
-    } else {
-      setError("No activation token found. Please register again.");
+    if (isSuccess) {
+      const message = data?.message || "Account activated successfully";
+      toast.success(message);
+      router.push("/auth/login");
     }
-  }, []);
-
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const otpValue = otp.join("");
-
-    try {
-      const result = (await dispatch(
-        activateUser({
-          activation_code: otpValue,
-          activation_token: activationToken,
-        })
-      ).unwrap()) as { success: boolean };
-
-      if (result.success) {
-        localStorage.removeItem("activationToken");
-        router.push("/auth/login");
+    if (error) {
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData?.data?.message || "Account activation failed");
+        setInvalidError(true);
+      }else {
+        console.log(error);
       }
-    } catch (err) {
-      setError(axiosErrorCatch(err));
     }
-  };
+  }, [isSuccess, error]);
+  const inputRefs = [
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+  ];
+  const [verifyNumber, setVerifyNumber] = useState<VerifyNumber>({
+    0: "",
+    1: "",
+    2: "",
+    3: "",
+  });
 
+  const verificationHandler = async () => {
+    const verificationNumber = Object.values(verifyNumber).join("");
+    if (verificationNumber.length !== 4) {
+      setInvalidError(true);
+      return;
+    }
+    await activation({
+      activation_token: token,
+      activation_code: verificationNumber,
+    });
+  };
   const handleInputChange = (index: number, value: string) => {
-    if (/^\d*$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
+    setInvalidError(false);
+    const newVerifyNumber = { ...verifyNumber, [index]: value };
+    setVerifyNumber(newVerifyNumber);
 
-      if (value && index < otp.length - 1) {
-        document.getElementById(`otp-${index + 1}`)?.focus();
-      }
+    if (value === "" && index > 0) {
+      inputRefs[index - 1].current?.focus();
+    } else if (value.length === 1 && index < 3) {
+      inputRefs[index + 1].current?.focus();
     }
   };
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
       <div className="w-full max-w-sm p-8 bg-[#142952] rounded-3xl shadow-lg space-y-6 text-center">
@@ -66,40 +78,41 @@ const VerifyOtp = () => {
 
         <h1 className="text-xl font-semibold">Verify Your Account</h1>
 
-        <form onSubmit={handleVerifyOtp} className="space-y-5">
-          <div className="flex justify-center gap-3">
-            {otp.map((value, index) => (
-              <input
-                key={index}
-                id={`otp-${index}`}
-                type="text"
-                maxLength={1}
-                value={value}
-                onChange={(e) => handleInputChange(index, e.target.value)}
-                className="w-12 h-12 text-center text-lg font-bold border border-gray-500 rounded-lg bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            ))}
-          </div>
-
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
+        <div className="1100px:w-[70%] m-auto flex items-center justify-around">
+          {Object.keys(verifyNumber).map((key, index) => (
+            <input
+              key={key}
+              ref={inputRefs[index]}
+              type="number"
+              className={`w-[65px] h-[65px] bg-transparent border-[3px] rounded-[10px] flex items-center text-black dark:text-white justify-center text-[18px] font-Poppins outline-none text-center ${
+                invalidError
+                  ? " border-red-500 shake"
+                  : "dark:border-white border-[#0000004a]"
+              }`}
+              placeholder=""
+              maxLength={1}
+              value={verifyNumber[key as keyof VerifyNumber]}
+              onChange={(e) => handleInputChange(index, e.target.value)}
+            />
+          ))}
+        </div>
+        <br />
+        <div className="w-full justify-center">
           <button
-            type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-full transition duration-300 shadow-md"
+            onClick={verificationHandler}
+            className="w-full py-3 px-6 rounded-full cursor-pointer bg-[#2190ff] min-h-[45px] text-[16px] font-Poppins font-semibold"
           >
             Verify OTP
           </button>
-        </form>
-
-        <p className="text-gray-300 text-sm">
+        </div>
+        <h5 className="text-gray-300 text-base">
           Go back to sign in?{" "}
           <a href="/auth/login" className="text-blue-400 hover:underline">
             Sign in
           </a>
-        </p>
+        </h5>
       </div>
     </div>
   );
 };
-
-export default VerifyOtp;
+export default Verification;
