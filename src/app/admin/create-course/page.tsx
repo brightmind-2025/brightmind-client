@@ -1,21 +1,24 @@
 "use client";
+import React from "react";
+import AdminSidebar from "../../../components/admin/Sidebar/AdminSidebar";
+import CreateCourse from "../../../components/admin/Course/CreateCourse";
+import DashBoardHeader from "@/components/admin/DashBoardHeader";
 
-import CourseFormWrapper from "@/components/admin/courseForm/courseFormWrapper";
-import AdminSidebar from "@/components/admin/adminSidebar";
-
- const  CreateCoursePage = () => {
+type Props = {};
+const page = (props: Props) => {
   return (
-    <div className="flex min-h-screen bg-[#0F172A] text-white">
-    
-      <div className="w-64">
-        <AdminSidebar/>
-      </div>
-
-      <div className="flex-1 p-6 overflow-y-auto">
-        <CourseFormWrapper/>
+    <div className="dark:bg-gradient-to-b from-slate-900 to-black bg-slate-100 ">
+      <div className="flex ">
+        <div className="1500px:w-[16%] w-1/5">
+          <AdminSidebar />
+        </div>
+        <div className="w-[85%]">
+          <DashBoardHeader />
+          <CreateCourse />
+        </div>
       </div>
     </div>
   );
 };
 
-export default CreateCoursePage;
+export default page;

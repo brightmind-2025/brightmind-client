@@ -1,36 +1,72 @@
 import Ratings from "@/utils/Rating";
+import Image from "next/image";
+import Link from "next/link";
+import React, { FC } from "react";
+import { AiOutlineUnorderedList } from "react-icons/ai";
 
-import React from "react";
+type Props = {
+  item: any;
+  isProfile?: boolean;
+};
 
-function CourseCard() {
+const CourseCard: FC<Props> = ({ item, isProfile }) => {
   return (
-    <div className="w-64 bg-[#1E3A8A] shadow-[0px_0px_15px_rgba(0,0,0,0.2)] p-6 space-y-4 relative overflow-hidden rounded-lg">
-    
-      <div className="flex justify-end">
-        <div className="w-10 h-10 bg-[#4F46E5] rounded-full flex items-center justify-center">
-      
+    <Link
+      href={!isProfile ? `/course/${item._id}` : `/course-access/${item._id}`}
+    >
+      <div
+        className="w-full min-h-[35vh] p-3 rounded-lg shadow-sm dark:shadow-inner 
+  backdrop-blur border border-[#00000015] dark:border-[#ffffff1d] 
+  dark:bg-slate-500 dark:bg-opacity-20"
+      >
+        <Image
+          src={item.thumbnail?.url || "/default-course.png"} // fallback if thumbnail is undefined
+          width={500}
+          height={300}
+          objectFit="contain"
+          className="rounded w-full"
+          alt={item.name || "Course Thumbnail"}
+        />
+        <br />
+
+        <h1 className="font-Poppins text-[16px] text-black dark:text-white">
+          {item?.name}
+        </h1>
+
+        <div className="w-full flex items-center justify-between pt-2">
+          <div className="relative bottom-5">
+            <Ratings rating={item?.ratings} />
+          </div>
+          <h5
+            className={`text-black dark:text-white ${
+              isProfile ? "hidden 800px:inline" : ""
+            }`}
+          >
+            {item?.purchased} Students
+          </h5>
+        </div>
+        <div className="w-full flex items-center justify-between pt-3">
+          <div className="flex">
+            <h3 className="text-black dark:text-white">
+              {item?.price === 0 ? "Free" : `${item?.price}$`}
+            </h3>
+            <h5 className="pl-3 text-[14px] mt-[-5px] line-through opacity-80 text-black dark:text-white">
+              {item?.estimatedPrice}$
+            </h5>
+          </div>
+          <div className="flex items-center pb-3">
+            <AiOutlineUnorderedList
+              size={20}
+              className="text-black dark:text-white"
+            />
+            <h5 className="pl-2 text-black dark:text-white">
+              {item.courseData?.length} Lectures
+            </h5>
+          </div>
         </div>
       </div>
-
-    
-      <h1 className="font-bold text-xl text-white">Course Title</h1>
-
-     
-      <div className="w-full h-32 bg-gray-700 rounded-md overflow-hidden border-2 border-blue-500">
-      
-      </div>
-
-      <p className="text-sm text-gray-300 leading-6">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse fuga
-        adipisicing elit Lorem ipsum dolor sit.
-      </p>
-
-      <div className="flex items-center space-x-2">
-        <Ratings rating={4} />
-        <span className="text-xs text-gray-400">(4.0)</span>
-      </div>
-    </div>
+    </Link>
   );
-}
+};
 
 export default CourseCard;

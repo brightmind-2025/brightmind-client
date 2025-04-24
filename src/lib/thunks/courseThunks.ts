@@ -4,7 +4,7 @@ import { Course } from "@/types/types";
 
 const API_URL = "http://localhost:4004/api/course";
 
-
+// Already implemented:
 export const getAllCourses = async () => {
   const response = await axios.get(`${API_URL}/get-all-courses`);
   return response.data.courses;
@@ -68,7 +68,7 @@ export const updateCourse = createAsyncThunk(
   }
 );
 
-
+// 🧠 Add a Question
 export const addQuestion = createAsyncThunk(
   "courses/addQuestion",
   async (data: { courseId: string; question: string }, { rejectWithValue }) => {
@@ -84,6 +84,7 @@ export const addQuestion = createAsyncThunk(
   }
 );
 
+// 🧠 Add an Answer (admin)
 export const addAnswer = createAsyncThunk(
   "courses/addAnswer",
   async (data: { courseId: string; questionId: string; answer: string }, { rejectWithValue }) => {
@@ -99,6 +100,7 @@ export const addAnswer = createAsyncThunk(
   }
 );
 
+// 🧠 Add Review (user)
 export const addReview = createAsyncThunk(
   "courses/addReview",
   async (
@@ -120,6 +122,7 @@ export const addReview = createAsyncThunk(
   }
 );
 
+// 🧠 Add Reply to Review (admin)
 export const addReplyToReview = createAsyncThunk(
   "courses/addReplyToReview",
   async (

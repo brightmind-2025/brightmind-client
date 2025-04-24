@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { fetchAllCourses } from "@/lib/thunks/courseThunks";
 import CourseCard from "@/components/course/courseCard";
-import { useAppDispatch, useAppSelector } from "@/hooks/dispatchHook";
+import { useAppDispatch, useAppSelector } from "@/components/hooks/dispatchHook";
 import { Course } from "@/types/types";
 import CategoryFilter from "./categoryBar";
 const CoursesPage = () => {
