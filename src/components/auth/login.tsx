@@ -41,9 +41,16 @@ const Login: FC<Props> = (props) => {
   });
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data) {
+      const userRole = data.user?.role;
       toast.success("Login successful");
-      router.push("/home");
+
+      // Redirect based on user role
+      if (userRole === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/home");
+      }
     }
     if (error) {
       if ("data" in error) {
@@ -51,12 +58,19 @@ const Login: FC<Props> = (props) => {
         toast.error(errorData?.data?.message || "Login failed");
       }
     }
-  }, [isSuccess, error]);
+  }, [isSuccess, error, data, router]);
+
+  // Handle social login redirections
+  const handleSocialLogin = (provider: string) => {
+    // We can't determine the user role before login with social providers
+    // So we'll redirect them based on role after authentication in your _app.js or layout.js
+    signIn(provider, { callbackUrl: "/auth/redirect" });
+  };
 
   const { errors, touched, values, handleChange, handleSubmit } = formik;
 
   return (
-    <div className="flex justify-center items-center h-screen  light:bg-white bg-gray-900">
+    <div className="flex justify-center items-center h-screen light:bg-white bg-gray-900">
       <div className="bg-[#11244D] p-8 rounded-2xl shadow-lg w-96 text-white">
         <h2 className="text-center text-xl font-bold mb-6">
           Login with <span className="text-yellow-500">Bright</span>Mind
@@ -67,7 +81,7 @@ const Login: FC<Props> = (props) => {
           </label>
           <input
             type="email"
-            name=""
+            name="email"
             value={values.email}
             onChange={handleChange}
             id="email"
@@ -126,12 +140,12 @@ const Login: FC<Props> = (props) => {
             <FcGoogle
               size={30}
               className="cursor-pointer mr-2"
-              onClick={() => signIn("google", { callbackUrl: "/home" })}
+              onClick={() => handleSocialLogin("google")}
             />
             <AiFillGithub
               size={30}
               className="cursor-pointer ml-2"
-              onClick={() => signIn("github", { callbackUrl: "/home" })}
+              onClick={() => handleSocialLogin("github")}
             />
           </div>
 

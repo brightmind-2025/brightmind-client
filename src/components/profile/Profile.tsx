@@ -8,6 +8,7 @@ import ProfileInfo from "./ProfileInfo";
 import ChangePassword from "./ChangePassword";
 import { useLogoutQuery } from "@/lib/features/authApi";
 import { signOut } from "next-auth/react";
+
 type Props = {
   user: any;
 };
@@ -19,6 +20,7 @@ const Profile: FC<Props> = ({ user }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [logout, setLogout] = useState(false);
+  
   const {} = useLogoutQuery(undefined, {
     skip: !logout ? true : false,
   });
@@ -29,25 +31,17 @@ const Profile: FC<Props> = ({ user }) => {
       await signOut();
       setLogout(true);
       toast.success("Logged out successfully!");
-     
     } catch (error) {
       console.error("Logout error:", error);
       toast.error("Logout failed. Try again.");
     }
   };
-  if (typeof window !== "undefined") {
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 85) {
-        setScroll(true);
-      } else {
-        setScroll(false);
-      }
-    });
-  }
+
   useEffect(() => {
     const handleScroll = () => {
       setScroll(window.scrollY > 85);
     };
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -59,14 +53,15 @@ const Profile: FC<Props> = ({ user }) => {
           w-[60%] 
           800px:w-[310px] 
           h-[450px] 
-          bg-slate-900 bg-opacity-90 
+          bg-gradient-to-b from-slate-900 to-slate-800
           border border-[#ffffff1d] 
-          rounded-[5px] 
-          shadow-sm 
+          rounded-lg
+          shadow-lg 
           mt-[80px] mb-[80px] 
           sticky 
           ${scroll ? "top-[12px]" : "top-[30px]"} 
           left-[30px]
+          transition-all duration-300 ease-in-out
         `}
       >
         <SidebarProfile
@@ -77,20 +72,20 @@ const Profile: FC<Props> = ({ user }) => {
           logOutHandler={logOutHandler}
         />
       </div>
-      {active === 1 && (
-        <div
-          className="w-full h-full bg-transparent mt-[80px]">
-          <ProfileInfo avatar={avatar} user={user} />
-        </div>
-      )}
-      {active === 2 && (
-        <div
-          className="
-w-full h-full bg-transparent mt-[80px]"
-        >
-          <ChangePassword />
-        </div>
-      )}
+
+      <div className="w-full ml-6">
+        {active === 1 && (
+          <div className="w-full h-full bg-transparent mt-[80px] transition-all duration-300 ease-in-out">
+            <ProfileInfo avatar={avatar} user={user} />
+          </div>
+        )}
+        
+        {active === 2 && (
+          <div className="w-full h-full bg-transparent mt-[80px] transition-all duration-300 ease-in-out">
+            <ChangePassword />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

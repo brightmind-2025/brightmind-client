@@ -1,10 +1,14 @@
 'use client'
+
+import { use } from 'react';
 import CourseDetailsPage from "../../../components/navbar/CourseDetailsPage";
 
-const Page = ({ params }: any) => {
+const Page = ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = use(params); // unwrap the Promise
+
   return (
     <div>
-      <CourseDetailsPage id={params.id} />
+      <CourseDetailsPage id={id} />
     </div>
   );
 };

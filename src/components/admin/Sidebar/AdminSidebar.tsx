@@ -1,6 +1,18 @@
 import { FC, JSX, useEffect, useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  styled,
+  Divider,
+  alpha,
+} from "@mui/material";
 import "react-pro-sidebar/dist/css/styles.css";
 import {
   HomeOutlinedIcon,
@@ -19,12 +31,87 @@ import {
   ManageHistoryIcon,
   SettingsIcon,
   ExitToAppIcon,
+  WarningAmberRounded as WarningIcon,
 } from "./Icon";
 import avatarDefault from "../../../assets/avatar.png";
 import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/components/hooks/dispatchHook";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { useRouter, usePathname } from "next/navigation";
+import { logoutUser } from "@/lib/thunks/authThunks";
+import { useLogoutQuery } from "@/lib/features/authApi";
+import { signOut } from "next-auth/react";
+import toast from "react-hot-toast";
+
+// Styled components for the dialog
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+  "& .MuiDialog-paper": {
+    backgroundColor: "#1E2133",
+    borderRadius: "12px",
+    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.4)",
+    maxWidth: "400px",
+    width: "100%",
+  },
+}));
+
+const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
+  backgroundColor: "#1E2133",
+  color: "#F5F5F5",
+  padding: "20px 24px 10px",
+  fontSize: "1.2rem",
+  fontWeight: 600,
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+}));
+
+const StyledDialogContent = styled(DialogContent)(({ theme }) => ({
+  backgroundColor: "#1E2133",
+  color: "#B8B9BE",
+  padding: "16px 24px",
+}));
+
+const StyledDialogActions = styled(DialogActions)(({ theme }) => ({
+  backgroundColor: "#1E2133",
+  padding: "16px 24px 20px",
+  justifyContent: "center",
+  gap: "12px",
+}));
+
+const CancelButton = styled(Button)(({ theme }) => ({
+  backgroundColor: "transparent",
+  color: "#B8B9BE",
+  border: "1px solid #3A3D4E",
+  borderRadius: "8px",
+  padding: "8px 22px",
+  textTransform: "none",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+  "&:hover": {
+    backgroundColor: "rgba(184, 185, 190, 0.1)",
+    borderColor: "#545766",
+  },
+}));
+
+const LogoutButton = styled(Button)(({ theme }) => ({
+  backgroundColor: "#c53030",
+  color: "white",
+  borderRadius: "8px",
+  padding: "8px 22px",
+  textTransform: "none",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+  "&:hover": {
+    backgroundColor: "#9b2c2c",
+  },
+}));
+
+const WarningIconStyled = styled(WarningIcon)(({ theme }) => ({
+  color: "#f97316",
+  fontSize: "22px",
+}));
 
 interface itemProps {
   title: string;
@@ -33,6 +120,7 @@ interface itemProps {
   selected: string;
   setSelected: any;
 }
+
 const Item: FC<itemProps> = ({ title, to, icon, selected, setSelected }) => {
   return (
     <MenuItem
@@ -48,18 +136,87 @@ const Item: FC<itemProps> = ({ title, to, icon, selected, setSelected }) => {
 
 const Sidebar = () => {
   const { user } = useSelector((state: any) => state.auth);
-  const [logout, setlogout] = useState(false);
+  const { theme } = useTheme();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [logout, setLogout] = useState(false);
+  const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
+
+ 
+  const {} = useLogoutQuery(undefined, {
+    skip: !logout ? true : false,
+  });
+
+  
+  const logoutHandler = async () => {
+    setOpenLogoutDialog(false);
+
+    try {
+      // First update UI state
+      setLogout(true);
+
+      // Then execute the logout operations
+      await dispatch(logoutUser());
+
+      // Show success message before navigation
+      toast.success("Logged out successfully!");
+
+      // Use Next.js signOut with redirect option
+      await signOut({
+        redirect: false,
+        callbackUrl: "/home",
+      });
+
+      // Ensure navigation happens after signOut completes
+      router.push("/home");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Logout failed. Try again.");
+      setLogout(false);
+    }
+  };
+
+  // Open the confirmation dialog
+  const handleLogoutClick = () => {
+    setOpenLogoutDialog(true);
+  };
+
+  // Close the dialog without logging out
+  const handleCancelLogout = () => {
+    setOpenLogoutDialog(false);
+  };
+
   useEffect(() => setMounted(true), []);
+
+  // Set the selected menu item based on the current path
+  useEffect(() => {
+    if (pathname) {
+      if (pathname === "/admin") setSelected("Dashboard");
+      else if (pathname === "/admin/users") setSelected("Users");
+      else if (pathname === "/admin/invoices") setSelected("Invoices");
+      else if (pathname === "/admin/create-course")
+        setSelected("Create Course");
+      else if (pathname === "/admin/courses") setSelected("Courses");
+      else if (pathname === "/admin/hero") setSelected("Hero");
+      else if (pathname === "/admin/faq") setSelected("FAQ");
+      else if (pathname === "/admin/categories") setSelected("Categories");
+      else if (pathname === "/admin/team") setSelected("Manage Team");
+      else if (pathname === "/admin/courses-analytics")
+        setSelected("Courses Analytics");
+      else if (pathname === "/admin/orders-analytics")
+        setSelected("Order Analytics");
+      else if (pathname === "/admin/users-analytics")
+        setSelected("Users Analytics");
+    }
+  }, [pathname]);
+
   if (!mounted) {
     return null;
   }
-  const logoutHandler = () => {
-    setlogout(true);
-  };
 
   return (
     <Box
@@ -113,7 +270,9 @@ const Sidebar = () => {
                 ml="15px"
               >
                 <Link href="/home">
-                  <h3 className="text-[25px] font-poppins uppercase dark:text-white text-black">
+                  <h3 className="text-[25px] font-poppins uppercase dark:text-white text-black"
+                  
+                  >
                     BrightMind
                   </h3>
                 </Link>
@@ -128,18 +287,22 @@ const Sidebar = () => {
           </MenuItem>
           {!isCollapsed && (
             <Box mb="25px">
+              <Link href="/home">
+
               <Box display="flex" justifyContent="center" alignItems="center">
                 <Image
                   alt="profile"
                   width={100}
                   height={100}
-                  src={user.avatar ? user?.avatar?.url : avatarDefault}
+                  src={user?.avatar ? user?.avatar?.url : avatarDefault}
                   style={{
                     cursor: "pointer",
                     borderRadius: "50%",
                   }}
+                  
                 />
               </Box>
+              </Link>
               <Box textAlign="center">
                 <Typography
                   variant="h4"
@@ -285,26 +448,54 @@ const Sidebar = () => {
               className="!text-[18px] text-black dark:text-[#ffffffc1] capitalize !font-[400] font-poppins"
               sx={{ m: "15px 0px 5px 20px" }}
             >
-              {!isCollapsed && "App"}
+              {!isCollapsed && ""}
             </Typography>
-            <Item
-              title="Settings"
-              to="/admin/settings"
-              icon={<SettingsIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Logout"
-              to="/admin/logout"
+
+            <MenuItem
+              active={selected === "Logout"}
+              onClick={handleLogoutClick}
               icon={<ExitToAppIcon className="text-red-600" />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            >
+              <Typography className="!text-[16px] !font-Poppins">
+                Logout
+              </Typography>
+            </MenuItem>
           </Box>
         </Menu>
       </ProSidebar>
-    </Box> 
+
+      {/* Enhanced Logout Confirmation Dialog */}
+      <StyledDialog
+        open={openLogoutDialog}
+        onClose={handleCancelLogout}
+        aria-labelledby="logout-dialog-title"
+        PaperProps={{
+          elevation: 24,
+        }}
+      >
+        <StyledDialogTitle id="logout-dialog-title">
+          <WarningIconStyled /> Sign Out
+        </StyledDialogTitle>
+
+        <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.08)" }} />
+
+        <StyledDialogContent>
+          <Typography sx={{ fontSize: "0.95rem", lineHeight: 1.5 }}>
+            Are you sure you want to sign out of your BrightMind admin account?
+            You will need to sign in again to access the dashboard.
+          </Typography>
+        </StyledDialogContent>
+
+        <StyledDialogActions>
+          <CancelButton onClick={handleCancelLogout} variant="outlined">
+            Cancel
+          </CancelButton>
+          <LogoutButton onClick={logoutHandler} variant="contained" autoFocus>
+            Sign Out
+          </LogoutButton>
+        </StyledDialogActions>
+      </StyledDialog>
+    </Box>
   );
 };
 

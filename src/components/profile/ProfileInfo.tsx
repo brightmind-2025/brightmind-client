@@ -4,7 +4,6 @@ import React, { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import avatars from "../../assets/avatar.png";
 import { AiOutlineCamera } from "react-icons/ai";
-import { styles } from "../style/style";
 import {
   useEditProfileMutation,
   useUpdateAvatarMutation,
@@ -26,18 +25,25 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
   });
   const [editProfile, { isSuccess: success, error: updateError }] =
     useEditProfileMutation();
+
   const imageHandler = async (e: any) => {
     const fileReader = new FileReader();
-    fileReader.onload = () => {
+    fileReader.onload = async () => {
       if (fileReader.readyState === 2) {
         const avatar = fileReader.result;
         if (typeof avatar === "string") {
-          updateAvatar(avatar);
+          try {
+            await updateAvatar(avatar).unwrap();
+            setLoadUser(true);
+          } catch (err) {
+            toast.error("Avatar update failed!");
+          }
         }
       }
     };
     fileReader.readAsDataURL(e.target.files[0]);
   };
+
   useEffect(() => {
     if (isSuccess || success) {
       setLoadUser(true);
@@ -70,76 +76,85 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
   };
 
   return (
-    <div className="w-full px-4 md:px-8 lg:px-16 py-6">
-      {/* Avatar Section */}
-      <div className="w-full flex justify-center mb-6">
-        <div className="relative">
-          <Image
-            src={user?.avatar?.url || avatar || avatars}
-            alt={user?.name || "User Avatar"}
-            width={140}
-            height={140}
-            className="w-[140px] h-[140px] object-cover cursor-pointer border-[3px] border-[#37a39a] rounded-full"
-          />
-          <input
-            type="file"
-            name=""
-            id="avatar"
-            className="hidden"
-            onChange={imageHandler}
-            accept="image/png, image/jpg, image/jpeg, image/webp"
-          />
-          <label htmlFor="avatar">
-            <div className="w-8 h-8 bg-white shadow-md rounded-full absolute bottom-2 right-2 flex items-center justify-center cursor-pointer border-x-stone-950">
-              <AiOutlineCamera size={18} className="text-black " />
-            </div>
-          </label>
+    <div className="w-full px-8 py-6 rounded-md pb-10 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 ml-10 flex flex-col justify-center">
+      <div className="max-w-xl mx-auto w-full">
+        <h1 className="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">
+          Your Profile
+        </h1>
+
+        {/* Avatar Section */}
+        <div className="w-full flex justify-center mb-6">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-[#37a39a] rounded-full opacity-10 group-hover:opacity-20 transition-opacity duration-300"></div>
+            <Image
+              src={user?.avatar?.url || avatar || avatars}
+              alt={user?.name || "User Avatar"}
+              width={120}
+              height={120}
+              className="w-[120px] h-[120px] object-cover cursor-pointer border-4 border-[#37a39a] rounded-full shadow-lg transition-all duration-300 group-hover:shadow-xl"
+            />
+            <input
+              type="file"
+              name=""
+              id="avatar"
+              className="hidden"
+              onChange={imageHandler}
+              accept="image/png, image/jpg, image/jpeg, image/webp"
+            />
+            <label htmlFor="avatar" className="cursor-pointer">
+              <div className="w-10 h-10 bg-white dark:bg-gray-800 shadow-md rounded-full absolute bottom-0 right-0 flex items-center justify-center border-2 border-[#37a39a] hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 transform translate-x-1 translate-y-1">
+                <AiOutlineCamera size={20} className="text-[#37a39a]" />
+              </div>
+            </label>
+          </div>
         </div>
-      </div>
 
-      {/* Form Section */}
-      <div className="w-full max-w-xl mx-auto">
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white dark:bg-gray-900 shadow-md rounded-md p-6 space-y-6"
-        >
-          {/* Name */}
-          <div>
-            <label className="block pb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-              Full Name
-            </label>
-            <input
-              type="text"
-              className={`${styles.input} w-full`}
-              required
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
+        {/* Form Section */}
+        <div className="w-full bg-white dark:bg-gray-900 shadow-xl rounded-xl p-6 space-y-6 border border-gray-100 dark:border-gray-700">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                Full Name
+              </label>
+              <input
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#37a39a] dark:bg-gray-800 dark:text-gray-200 transition-all duration-200"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your full name"
+              />
+            </div>
 
-          {/* Email */}
-          <div>
-            <label className="block pb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-              Email Address
-            </label>
-            <input
-              type="text"
-              className={`${styles.input} w-full`}
-              required
-              value={user?.email}
-              readOnly
-            />
-          </div>
+            {/* Email */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                Email Address
+              </label>
+              <input
+                type="text"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-gray-300 cursor-not-allowed"
+                required
+                value={user?.email}
+                readOnly
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Email cannot be changed
+              </p>
+            </div>
 
-          {/* Submit Button */}
-          <div className="flex justify-end">
-            <input
-              type="submit"
-              value="Update"
-              className="px-6 py-2 bg-[#37a39a] hover:bg-[#2e908b] text-white rounded-md font-medium transition duration-200"
-            />
-          </div>
-        </form>
+            {/* Submit Button */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                className="w-full px-4 py-2 bg-[#37a39a] hover:bg-[#2e908b] text-white rounded-lg font-medium transition duration-200 shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
+              >
+                <span>Update Profile</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

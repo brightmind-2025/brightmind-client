@@ -1,5 +1,6 @@
 import { styles } from "@/components/style/style";
-import React, { FC, useState } from "react";
+import { useGetHeroDataQuery } from "@/lib/features/layout/layoutApi";
+import React, { FC, useEffect, useState } from "react";
 type Props = {
   courseInfo: any;
   setCourseInfo: (courseInfo: any) => void;
@@ -13,6 +14,15 @@ const CourseInformation: FC<Props> = ({
   setActive,
 }) => {
   const [dragging, setDragging] = useState(false);
+  const { data } = useGetHeroDataQuery("Categories", {});
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    if (data) {
+      setCategories(data.layout.categories);
+    }
+  }, [data]);
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     setActive(active + 1);
@@ -127,30 +137,69 @@ ${styles.input}`}
           </div>
         </div>
         <br />
-        <div>
-          <label className={styles.label} htmlFor="tags">
-            Course Tags
-          </label>
-          <input
-            type="text"
-            required
-            name="tags"
-            value={courseInfo.tags}
-            onChange={(e: any) =>
-              setCourseInfo({ ...courseInfo, tags: e.target.value })
-            }
-            id="tags"
-            placeholder="MERN, Next 13, Socket io, Tailwind CSS, LMS"
-            className={styles.input}
-          />
+        <div className="w-full flex justify-between">
+          <div className="w-[45%]">
+            <label className={styles.label} htmlFor="tags">
+              Course Tags
+            </label>
+            <input
+              type="text"
+              required
+              name="tags"
+              value={courseInfo.tags}
+              onChange={(e: any) =>
+                setCourseInfo({ ...courseInfo, tags: e.target.value })
+              }
+              id="tags"
+              placeholder="MERN, Next 13, Socket io, Tailwind CSS, LMS"
+              className={styles.input}
+            />
+          </div>
+          <div className="w-[50%]">
+            <label className={styles.label} htmlFor="demoUrl">
+              Course Category
+            </label>
+            <select
+              name="categories" // Changed from category to categories
+              id="categorySelect"
+              className={`${styles.input}`}
+              value={courseInfo.categories} // Changed from category to categories
+              onChange={
+                (e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setCourseInfo({ ...courseInfo, categories: e.target.value }) // Changed from category to categories
+              }
+            >
+              <option value="">Select Category</option>
+              {categories.map((item: any) => (
+                <option value={item.title} key={item._id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
+
         <br />
         <div className="w-full flex justify-between">
           <div className="w-[45%]">
             <label className={styles.label} htmlFor="level">
               Course Level
             </label>
-            <input
+            <select
+              name="level"
+              id="levelSelect"
+              className={`${styles.input}`}
+              value={courseInfo.level}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setCourseInfo({ ...courseInfo, level: e.target.value })
+              }
+            >
+              <option value="">Select Level</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Expert">Expert</option>
+            </select>
+            {/* <input
               type="text"
               name="level"
               value={courseInfo.level}
@@ -161,7 +210,7 @@ ${styles.input}`}
               id="level"
               placeholder="Beginner / Intermediate / Expert"
               className={styles.input}
-            />
+            /> */}
           </div>
           <div className="w-[50%]">
             <label className={styles.label} htmlFor="demoUrl">

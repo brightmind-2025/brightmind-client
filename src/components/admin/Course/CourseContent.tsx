@@ -215,12 +215,28 @@ const CourseContent: FC<Props> = ({
                     <label className={styles.label}>Video Url</label>
                     <input
                       type="text"
-                      placeholder="URL https://youtube.com/watch?v=..."
+                      placeholder="URL of the video"
                       className={`${styles.input}`}
                       value={item.videoUrl}
                       onChange={(e) => {
                         const updatedData = [...courseContentData];
                         updatedData[index].videoUrl = e.target.value;
+                        setCourseContentData(updatedData);
+                      }}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className={styles.label}>
+                      Video Length (in minutes)
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="Length of the video"
+                      className={`${styles.input}`}
+                      value={item.videoLength} // Changed from videoLenght to videoLength
+                      onChange={(e) => {
+                        const updatedData = [...courseContentData];
+                        updatedData[index].videoLength = e.target.value; // Changed from videoLenght to videoLength
                         setCourseContentData(updatedData);
                       }}
                     />

@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import DashboardHero from "@/components/admin/DashboardHero";
 import AdminProtected from "@/components/hooks/adminProtected";
 import Heading from "@/utils/Headings";
 import AdminSidebar from "../../../components/admin/Sidebar/AdminSidebar";
 import AllTeams from "../../../components/admin/Team/AllTeams";
+import DashBoardHeader from "@/components/admin/DashBoardHeader";
 
 type Props = {};
 
@@ -23,7 +23,7 @@ const Page = (props: Props) => {
             <AdminSidebar />
           </div>
           <div className="w-[85%]">
-            <DashboardHero />
+            <DashBoardHeader />
             <AllTeams />
           </div>
         </div>

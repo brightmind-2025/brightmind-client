@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import DashboardHero from "@/components/admin/DashboardHero";
+import DashBoardHeader from "@/components/admin/DashBoardHeader";
 import AdminProtected from "@/components/hooks/adminProtected";
 import Heading from "@/utils/Headings";
 import AdminSidebar from "../../../components/admin/Sidebar/AdminSidebar";
@@ -23,7 +23,7 @@ const Page = (props: Props) => {
             <AdminSidebar />
           </div>
           <div className="w-[85%]">
-            <DashboardHero />
+            <DashBoardHeader />
             <AllUsers />
           </div>
         </div>
