@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { styles } from "../style/style";
 import { useUpdatePasswordMutation } from "@/lib/features/user/userApi";
 import toast from "react-hot-toast";
+import { FiLock, FiKey, FiCheck } from "react-icons/fi";
 
 type Props = {};
 
@@ -22,9 +23,14 @@ const ChangePassword: FC<Props> = () => {
       });
     }
   };
+
   useEffect(() => {
     if (isSuccess) {
       toast.success("Password updated successfully");
+      // Clear form fields after successful update
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     }
     if (error) {
       if ("data" in error) {
@@ -35,60 +41,103 @@ const ChangePassword: FC<Props> = () => {
   }, [isSuccess, error]);
 
   return (
-    <div className="w-full px-4 py-6 800px:px-8 flex flex-col items-center">
-      <h1 className="text-[25px] 800px:text-[30px] font-Poppins font-[500] text-black dark:text-white pb-4">
-        Change Password
-      </h1>
+    <div className="w-full  800px:px-8  flex items-center flex-col mt-[-60px] ">
+      <div className="mb-6 text-center">
+        {/* <div className="inline-block p-3 rounded-full bg-[#37a39a] bg-opacity-20 mb-3">
+          <FiKey className="w-6 h-6 text-[#37a39a]" />
+        </div> */}
+        <h1 className="text-[25px] 800px:text-[30px] font-Poppins font-[500] text-black dark:text-white">
+          Change Password
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-2 max-w-md">
+          Update your password to keep your account secure
+        </p>
+      </div>
 
       <form
         onSubmit={passwordChangeHandler}
-        className="w-full max-w-xl bg-white dark:bg-gray-900 p-6 rounded-md shadow-md space-y-5"
+        className="w-full max-w-xl bg-white dark:bg-slate-800 p-8 rounded-lg shadow-lg space-y-6 border border-gray-100 dark:border-gray-700"
       >
-        <div>
-          <label className="block text-sm font-medium text-black dark:text-white mb-1">
-            Enter your old password
+        <div className="relative">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Current Password
           </label>
-          <input
-            type="password"
-            className={`${styles.input} w-full text-black dark:text-white`}
-            required
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-          />
+          <div className="relative">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <FiLock className="text-gray-500 dark:text-gray-400" />
+            </span>
+            <input
+              type="password"
+              className={`${styles.input} w-full pl-10 text-black dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:border-[#37a39a] focus:ring-2 focus:ring-[#37a39a] focus:ring-opacity-30 rounded-md transition duration-200`}
+              required
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              placeholder="Enter your current password"
+            />
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-black dark:text-white mb-1">
-            Enter your new password
+        <div className="relative">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            New Password
           </label>
-          <input
-            type="password"
-            className={`${styles.input} w-full text-black dark:text-white`}
-            required
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
+          <div className="relative">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <FiLock className="text-gray-500 dark:text-gray-400" />
+            </span>
+            <input
+              type="password"
+              className={`${styles.input} w-full pl-10 text-black dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:border-[#37a39a] focus:ring-2 focus:ring-[#37a39a] focus:ring-opacity-30 rounded-md transition duration-200`}
+              required
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Create a strong password"
+            />
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-black dark:text-white mb-1">
-            Confirm your new password
+        <div className="relative">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Confirm New Password
           </label>
-          <input
-            type="password"
-            className={`${styles.input} w-full text-black dark:text-white`}
-            required
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
+          <div className="relative">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <FiCheck className="text-gray-500 dark:text-gray-400" />
+            </span>
+            <input
+              type="password"
+              className={`${
+                styles.input
+              } w-full pl-10 text-black dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:border-[#37a39a] focus:ring-2 focus:ring-[#37a39a] focus:ring-opacity-30 rounded-md transition duration-200 ${
+                confirmPassword &&
+                newPassword &&
+                confirmPassword !== newPassword
+                  ? "border-red-500 dark:border-red-400"
+                  : ""
+              }`}
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Re-enter your new password"
+            />
+            {confirmPassword &&
+              newPassword &&
+              confirmPassword !== newPassword && (
+                <p className="text-red-500 text-xs mt-1">
+                  Passwords do not match
+                </p>
+              )}
+          </div>
         </div>
 
         <div className="pt-4">
-          <input
+          <button
             type="submit"
-            value="Update"
-            className="w-full h-10 border border-[#37a39a] bg-[#37a39a] hover:bg-[#2e908b] text-white font-medium rounded-md cursor-pointer transition"
-          />
+            className="w-full py-3 border border-[#37a39a] bg-[#37a39a] hover:bg-[#2e908b] text-white font-medium rounded-md cursor-pointer transition duration-300 shadow-md hover:shadow-lg flex items-center justify-center"
+          >
+            <FiKey className="mr-2" />
+            Update Password
+          </button>
         </div>
       </form>
     </div>

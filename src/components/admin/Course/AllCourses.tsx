@@ -1,37 +1,89 @@
-import React from "react";
+import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Button } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useTheme } from "next-themes";
 import { FaRegEdit } from "react-icons/fa";
-import { useGetAllCoursesQuery } from "@/lib/features/courses/courseApi";
+import {
+  useDeleteCourseMutation,
+  useGetAllCoursesQuery,
+} from "@/lib/features/courses/courseApi";
+import Link from "next/link";
 import Loader from "@/components/Loader/Loader";
+import { toast } from "react-hot-toast";
 
 type Props = {};
 
 const AllCourses = (props: Props) => {
   const { theme } = useTheme();
-  const { isLoading, data, error } = useGetAllCoursesQuery({});
+  const [open, setOpen] = useState(false);
+  const [courseId, setCourseId] = useState("");
+  const [courseName, setCourseName] = useState("");
+  const [confirmText, setConfirmText] = useState("");
+
+  const [deleteCourse, { isLoading: isDeleting }] = useDeleteCourseMutation({});
+  const { isLoading, data, refetch } = useGetAllCoursesQuery({});
+
+  const handleDelete = (id: string, title: string) => {
+    setCourseId(id);
+    setCourseName(title);
+    setOpen(true);
+    setConfirmText("");
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setConfirmText("");
+  };
+
+  const handleConfirm = () => {
+    if (confirmText.toLowerCase() !== "delete") {
+      toast.error("Please type 'delete' to confirm");
+      return;
+    }
+
+    deleteCourse(courseId)
+      .unwrap()
+      .then(() => {
+        toast.success("Course deleted successfully");
+        refetch();
+        setOpen(false);
+        setConfirmText("");
+      })
+      .catch((error) => {
+        toast.error(error?.data?.message || "Failed to delete course");
+        console.error("Failed to delete course: ", error);
+      });
+  };
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     { field: "title", headerName: "Course Title", flex: 1 },
-    { field: "ratings", headerName: "Ratings", flex: 0.5 },
-    { field: "price", headerName: "Price", flex: 0.5 },
-    { field: "purchased", headerName: "Purchased", flex: 0.5 },
-    { field: "created_at", headerName: "Created At", flex: 0.5 },
+    { field: "ratings", headerName: "Ratings", flex: 0.3 },
+    { field: "price", headerName: "Price", flex: 0.3 },
+    { field: "purchased", headerName: "Purchased", flex: 0.3 },
+    { field: "created_at", headerName: "Created At", flex: 0.4 },
     {
       field: "edit",
       headerName: "Edit",
       flex: 0.2,
       renderCell: (params: any) => {
         return (
-          <Button>
+          <Link href={`/admin/edit-course/${params.row.id}`}>
             <FaRegEdit
-              className={theme === "dark" ? "text-white" : "text-black"}
+              className="dark:text-white text-black cursor-pointer mt-4 ml-2"
               size={20}
             />
-          </Button>
+          </Link>
         );
       },
     },
@@ -39,10 +91,11 @@ const AllCourses = (props: Props) => {
       field: " ",
       headerName: "Delete",
       flex: 0.2,
-      renderCell: () => (
-        <Button>
+      renderCell: (params: any) => (
+        <Button onClick={() => handleDelete(params.row.id, params.row.title)}>
           <AiOutlineDelete
-            className={theme === "dark" ? "text-[#EF4444]" : "text-[#DC2626]"}
+            className={`mr-3 ${theme === "dark" ? "text-[#EF4444]" : "text-[#DC2626]"}`}
+         
             size={20}
           />
         </Button>
@@ -138,6 +191,121 @@ const AllCourses = (props: Props) => {
               }}
             />
           </Box>
+
+          {/* Course Delete Confirmation Dialog */}
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="course-delete-dialog-title"
+            PaperProps={{
+              style: {
+                backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF",
+                color: theme === "dark" ? "#F9FAFB" : "#111827",
+                borderRadius: "8px",
+                padding: "16px",
+                width: "500px",
+                maxWidth: "90vw",
+              },
+            }}
+          >
+            <DialogTitle
+              id="course-delete-dialog-title"
+              sx={{ fontWeight: "bold", fontSize: "1.25rem" }}
+            >
+              Confirm Course Deletion
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText
+                sx={{
+                  color: theme === "dark" ? "#D1D5DB" : "#4B5563",
+                  marginBottom: "16px",
+                }}
+              >
+                You are about to permanently delete the course{" "}
+                <strong>{courseName}</strong>. This action cannot be undone and
+                will remove all data associated with this course, including
+                student enrollments and progress.
+              </DialogContentText>
+
+              <DialogContentText
+                sx={{
+                  color: theme === "dark" ? "#FCA5A5" : "#DC2626",
+                  fontWeight: "medium",
+                  marginBottom: "16px",
+                }}
+              >
+                To confirm deletion, please type <strong>delete</strong> in the
+                field below:
+              </DialogContentText>
+
+              <TextField
+                autoFocus
+                margin="dense"
+                placeholder="Type 'delete' to confirm"
+                fullWidth
+                value={confirmText}
+                onChange={(e) => setConfirmText(e.target.value)}
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: theme === "dark" ? "#4B5563" : "#D1D5DB",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: theme === "dark" ? "#6B7280" : "#9CA3AF",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#EF4444",
+                    },
+                    color: theme === "dark" ? "#F9FAFB" : "#111827",
+                  },
+                }}
+              />
+            </DialogContent>
+            <DialogActions sx={{ padding: "16px 0 0 0" }}>
+              <Button
+                onClick={handleClose}
+                sx={{
+                  backgroundColor: theme === "dark" ? "#4B5563" : "#E5E7EB",
+                  color: theme === "dark" ? "#F9FAFB" : "#111827",
+                  "&:hover": {
+                    backgroundColor: theme === "dark" ? "#6B7280" : "#D1D5DB",
+                  },
+                  textTransform: "none",
+                  fontWeight: "medium",
+                  padding: "8px 16px",
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleConfirm}
+                disabled={isDeleting || confirmText.toLowerCase() !== "delete"}
+                sx={{
+                  backgroundColor:
+                    confirmText.toLowerCase() === "delete"
+                      ? "#EF4444"
+                      : theme === "dark"
+                      ? "#374151"
+                      : "#9CA3AF",
+                  color: "#FFFFFF",
+                  "&:hover": {
+                    backgroundColor:
+                      confirmText.toLowerCase() === "delete"
+                        ? "#DC2626"
+                        : theme === "dark"
+                        ? "#374151"
+                        : "#9CA3AF",
+                  },
+                  textTransform: "none",
+                  fontWeight: "medium",
+                  padding: "8px 16px",
+                }}
+              >
+                {isDeleting ? "Deleting..." : "Delete Course"}
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       )}
     </div>

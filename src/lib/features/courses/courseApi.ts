@@ -29,11 +29,82 @@ export const coursesApi = apiSlice.injectEndpoints({
     }),
     getCourseDetails: builder.query({
       query: (id) => ({
-        url: `/course/get-course/${id}`, 
+        url: `/course/get-course/${id}`,
         method: "GET",
         credentials: "include" as const,
       }),
     }),
+    deleteCourse: builder.mutation({
+      query: (id) => ({
+        url: `/course/delete-course/${id}`,
+        method: "DELETE",
+        credentials: "include" as const,
+      }),
+    }),
+    editCourse: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/course/edit-course/${id}`,
+        method: "PUT",
+        body: data,
+        credentials: "include" as const,
+      }),
+    }),
+    getCourseContent: builder.query({
+      query: (id) => ({
+        url: `/course/get-course-content/${id}`,
+        method: "GET",
+        credentials: "include" as const,
+      }),
+    }),
+    addNewQuestion: builder.mutation({
+      query: ({ question, courseId, contentId }) => ({
+        url: "/course/add-question",
+        method: "PUT",
+        body: {
+          question,
+          courseId,
+          contentId,
+        },
+        credentials: "include" as const,
+      }),
+    }),
+    addAnswerInQuestion: builder.mutation({
+      query: ({ answer, courseId, contentId, questionId }) => ({
+        url: "/course/add-answer",
+        method: "PUT",
+        body: {
+          answer,
+          courseId,
+          contentId,
+          questionId,
+        },
+        credentials: "include" as const,
+      }),
+    }),
+    addReviewInCourse: builder.mutation({
+      query: ({ review, rating, courseId }) => ({
+        url: `/course/add-review/${courseId}`,
+        method: "PUT",
+        body: {
+          review,
+          rating,
+        },
+        credentials: "include" as const,
+      }),
+    }),
+    addReplyInReview: builder.mutation({
+      query: ({ comment, courseId, reviewId }) => ({
+        url: "/course/add-reply",
+        method: "PUT",
+        body: {
+          comment,
+          courseId,
+          reviewId,
+        },
+        credentials: "include" as const,
+      }),
+    }),
+    
   }),
 });
 
@@ -42,4 +113,11 @@ export const {
   useGetAllCoursesQuery,
   useGetUsersAllCoursesQuery,
   useGetCourseDetailsQuery,
+  useDeleteCourseMutation,
+  useEditCourseMutation,
+  useGetCourseContentQuery,
+  useAddNewQuestionMutation,
+  useAddAnswerInQuestionMutation,
+  useAddReviewInCourseMutation,
+  useAddReplyInReviewMutation,
 } = coursesApi;

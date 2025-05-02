@@ -3,26 +3,27 @@ import Heading from "@/utils/Headings";
 import React from "react";
 import AdminSidebar from "../../components/admin/Sidebar/AdminSidebar";
 import AdminProtected from "@/components/hooks/adminProtected";
-import DashboardHero from "../../components/admin/DashboardHero"
+import DashboardHero from "../../components/admin/DashboardHero";
 
 type Props = {};
 
-const page = (props: Props) => {
+const Page = (props: Props) => {
   return (
-    <div className="bg-slate-900">
+    <div className="bg-slate-900 min-h-screen">
       <AdminProtected>
         <Heading
           title="Admin"
           description="Admin page"
           keywords="Programming"
         />
-
-        <div className="flex h-[200vh]">
-          <div className="1500px:w-[16%] w-1/5">
+        
+        <div className="flex flex-col lg:flex-row min-h-screen">
+          <div className="lg:w-64 fixed left-0 top-0 h-full hidden lg:block">
             <AdminSidebar />
           </div>
-          <div className="w-[85%]">
-            <DashboardHero/>
+          
+          <div className="lg:ml-64 flex-1 overflow-x-hidden">
+            <DashboardHero isDashboard={true} />
           </div>
         </div>
       </AdminProtected>
@@ -30,4 +31,4 @@ const page = (props: Props) => {
   );
 };
 
-export default page;
+export default Page;

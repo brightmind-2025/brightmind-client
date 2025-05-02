@@ -32,37 +32,37 @@ const SidebarProfile: FC<Props> = ({
 
   return (
     <div className="w-full relative z-60">
-      {/* Overlay and Confirmation (covers only sidebar area) */}
+      {/* Overlay and Confirmation Modal */}
       <AnimatePresence>
         {showLogoutModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/20 z-50"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center"
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 rounded-lg p-4 w-64 shadow-lg"
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-gray-800 rounded-xl p-6 w-80 shadow-2xl border border-gray-700"
             >
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white text-center">
+              <h3 className="text-xl font-bold text-white text-center">
                 Confirm Logout
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300 text-center mt-2">
+              <p className="text-gray-300 text-center mt-3">
                 Are you sure you want to log out?
               </p>
-              <div className="flex justify-between mt-4">
+              <div className="flex justify-between mt-6 gap-4">
                 <button
                   onClick={() => setShowLogoutModal(false)}
-                  className="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 transition"
+                  className="flex-1 px-4 py-2.5 rounded-lg bg-gray-700 text-gray-200 hover:bg-gray-600 transition-colors font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleLogoutConfirmation}
-                  className="px-4 py-2 rounded-md bg-red-500 text-white hover:bg-red-600 transition"
+                  className="flex-1 px-4 py-2.5 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors font-medium"
                 >
                   Logout
                 </button>
@@ -72,82 +72,128 @@ const SidebarProfile: FC<Props> = ({
         )}
       </AnimatePresence>
 
-      {/* Profile Items */}
-      <div className="w-full space-y-1">
-        <div
-          className={`w-full flex items-center px-3 py-4 cursor-pointer ${
-            active === 1 ? "bg-slate-800" : "bg-transparent"
-          }`}
-          onClick={() => setActive(1)}
-        >
+      {/* User Profile Header */}
+      <div className="mb-6 pt-4 px-4">
+        <div className="flex items-center space-x-3 mb-6">
           <Image
             src={user.avatar || avatar ? user.avatar.url || avatar : avatars}
             alt="profile pic"
-            width={30}
-            height={30}
-            className="w-[20px] h-[20px] 800px:w-[30px] 800px:h-[30px] cursor-pointer rounded-full"
+            width={42}
+            height={42}
+            className="w-[42px] h-[42px] rounded-full border-2 border-indigo-500 shadow-md"
           />
-          <h5 className="pl-2 800px:block hidden font-poppins text-white dark:text-white">
-            My Account
-          </h5>
+          <div>
+            <h3 className="text-white font-medium">{user?.name || "User"}</h3>
+            <p className="text-gray-400 text-xs">
+              {user?.role === "admin" ? "Administrator" : "Student"}
+            </p>
+          </div>
+        </div>
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-700 to-transparent opacity-50"></div>
+      </div>
+
+      {/* Navigation Items */}
+      <div className="w-full space-y-2 px-2">
+        {/* My Account */}
+        <div
+          className={`w-full flex items-center px-4 py-3 cursor-pointer rounded-lg transition-all duration-200 ${
+            active === 1
+              ? "bg-indigo-600 shadow-lg shadow-indigo-900/30"
+              : "bg-transparent hover:bg-gray-800"
+          }`}
+          onClick={() => setActive(1)}
+        >
+          <div
+            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+              active === 1 ? "bg-indigo-500" : "bg-gray-700"
+            }`}
+          >
+            <Image
+              src={user.avatar || avatar ? user.avatar.url || avatar : avatars}
+              alt="profile icon"
+              width={20}
+              height={20}
+              className="w-[20px] h-[20px] rounded-full"
+            />
+          </div>
+          <h5 className="pl-3 font-medium text-white">My Account</h5>
         </div>
 
+        {/* Change Password */}
         <div
-          className={`w-full flex items-center px-3 py-4 cursor-pointer ${
-            active === 2 ? "bg-slate-800" : "bg-transparent"
+          className={`w-full flex items-center px-4 py-3 cursor-pointer rounded-lg transition-all duration-200 ${
+            active === 2
+              ? "bg-indigo-600 shadow-lg shadow-indigo-900/30"
+              : "bg-transparent hover:bg-gray-800"
           }`}
           onClick={() => setActive(2)}
         >
-          <RiLockPasswordLine size={20} className="text-white" />
-          <h5 className="pl-2 800px:block hidden font-poppins text-white dark:text-white">
-            Change Password
-          </h5>
+          <div
+            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+              active === 2 ? "bg-indigo-500" : "bg-gray-700"
+            }`}
+          >
+            <RiLockPasswordLine size={16} className="text-white" />
+          </div>
+          <h5 className="pl-3 font-medium text-white">Change Password</h5>
         </div>
 
-        <div
-          className={`w-full flex items-center px-3 py-4 cursor-pointer ${
-            active === 3 ? "bg-slate-800" : "bg-transparent"
-          }`}
-          onClick={() => setActive(3)}
-        >
-          <SiCoursera size={20} className="text-white" />
-          <h5 className="pl-2 800px:block hidden font-poppins text-white dark:text-white">
-            Enrolled Course
-          </h5>
-        </div>
+        {/* Enrolled Course */}
+        {user.role !== "admin" && (
+          <div
+            className={`w-full flex items-center px-4 py-3 cursor-pointer rounded-lg transition-all duration-200 ${
+              active === 3
+                ? "bg-indigo-600 shadow-lg shadow-indigo-900/30"
+                : "bg-transparent hover:bg-gray-800"
+            }`}
+            onClick={() => setActive(3)}
+          >
+            <div
+              className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                active === 3 ? "bg-indigo-500" : "bg-gray-700"
+              }`}
+            >
+              <SiCoursera size={16} className="text-white" />
+            </div>
+            <h5 className="pl-3 font-medium text-white">Enrolled Course</h5>
+          </div>
+        )}
 
+        {/* Admin Dashboard (conditional) */}
         {user.role === "admin" && (
           <Link
-            className={`w-full flex items-center px-3 py-4 cursor-pointer ${
-              active === 5 ? "bg-slate-800" : "bg-transparent"
+            className={`w-full flex items-center px-4 py-3 cursor-pointer rounded-lg transition-all duration-200 ${
+              active === 5
+                ? "bg-indigo-600 shadow-lg shadow-indigo-900/30"
+                : "bg-transparent hover:bg-gray-800"
             }`}
             href={"/admin"}
           >
-            <MdOutlineAdminPanelSettings size={22} className="text-white" />
-            <h5 className="pl-2 800px:block hidden font-poppins text-white dark:text-white">
-              Admin Dashbord
-            </h5>
+            <div
+              className={`w-8 h-8 flex items-center justify-center rounded-full ${
+                active === 5 ? "bg-indigo-500" : "bg-gray-700"
+              }`}
+            >
+              <MdOutlineAdminPanelSettings size={16} className="text-white" />
+            </div>
+            <h5 className="pl-3 font-medium text-white">Admin Dashboard</h5>
           </Link>
         )}
-        {/* Logout Button */}
+      </div>
+
+      {/* Logout Button */}
+      <div className="absolute top-[350px] left-0 right-0 px-4">
         <motion.div
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className={`w-full flex items-center px-3 py-4 cursor-pointer ${
-            active === 4 ? "bg-slate-800" : "bg-transparent"
-          } group transition-all duration-300 hover:bg-slate-800/50`}
+          className={`w-full flex items-center justify-center px-4 py-2.5 cursor-pointer rounded-lg transition-all duration-200 
+            ${
+              active === 4 ? "bg-red-600" : "bg-red-500/10 hover:bg-red-500/20"
+            }`}
           onClick={() => setShowLogoutModal(true)}
         >
-          <div className="relative">
-            <AiOutlineLogout
-              size={20}
-              className="text-white group-hover:text-red-400 transition-colors"
-            />
-            <div className="absolute inset-0 bg-red-500/10 rounded-full scale-0 group-hover:scale-100 transition-transform" />
-          </div>
-          <h5 className="pl-2 800px:block hidden font-poppins text-white dark:text-white group-hover:text-red-400 transition-colors">
-            Logout
-          </h5>
+          <AiOutlineLogout size={18} className="text-red-400" />
+          <h5 className="pl-2  font-medium text-red-400">Logout</h5>
         </motion.div>
       </div>
     </div>

@@ -39,6 +39,7 @@ const CourseOptions: FC<Props> = ({ active, setActive }) => {
             {option}
           </h5>
         </div>
+       
       ))}
     </div>
   );

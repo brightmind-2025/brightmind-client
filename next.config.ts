@@ -7,6 +7,7 @@ const nextConfig = {
       "res.cloudinary.com",
       "randomuser.me",
       "images.unsplash.com",
+      "upstream.com",
     ],
     remotePatterns: [
       {
