@@ -7,16 +7,18 @@ import CourseContent from "./CourseContent";
 import CoursePreview from "./CoursePreview";
 import { useCreateCourseMutation } from "../../../lib/features/courses/courseApi";
 import toast from "react-hot-toast";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 type Props = {};
 
 const CreateCourse = (props: Props) => {
+  const router = useRouter();
   const [createCourse, { isLoading, error, isSuccess }] =
     useCreateCourseMutation();
   useEffect(() => {
     if (isSuccess) {
       toast.success("Course created successfully");
-      redirect("/admin/courses");
+      router.push("/admin/courses");
     }
 
     if (error) {
@@ -35,9 +37,11 @@ const CreateCourse = (props: Props) => {
     estimatedPrice: "",
     tags: "",
     level: "",
+    categories: "",
     demoUrl: "",
     thumbnail: "",
   });
+  
   const [benefits, setBenefits] = useState([{ title: "" }]);
   const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
   const [courseContentData, setCourseContentData] = useState([
@@ -46,6 +50,7 @@ const CreateCourse = (props: Props) => {
       title: "",
       description: "",
       videoSection: "Untitled Section",
+      videoLength: "",  // Fixed field name here from videoLenght to videoLength
       links: [
         {
           title: "",
@@ -73,6 +78,7 @@ const CreateCourse = (props: Props) => {
         videoUrl: courseContent.videoUrl,
         title: courseContent.title,
         description: courseContent.description,
+        videoLength: courseContent.videoLength, // Fixed field name here
         videoSection: courseContent.videoSection,
         links: courseContent.links.map((link) => ({
           title: link.title,
@@ -90,6 +96,7 @@ const CreateCourse = (props: Props) => {
       tags: courseInfo.tags,
       thumbnail: courseInfo.thumbnail,
       level: courseInfo.level,
+      categories: courseInfo.categories, // Added the missing categories field
       demoUrl: courseInfo.demoUrl,
       totalVideos: courseContentData.length,
       benefits: formattedBenefits,

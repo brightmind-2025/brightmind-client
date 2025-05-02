@@ -154,7 +154,10 @@ const CourseData: FC<Props> = ({
         >
           Next
         </div>
+        
       </div>
+      <br/>
+      <br/>
     </div>
   );
 };
